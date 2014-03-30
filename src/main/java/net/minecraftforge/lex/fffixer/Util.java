@@ -32,28 +32,7 @@ public class Util
         while (itr.hasNext())
             list.add(itr.next());
     
-        Collections.sort(list, new Comparator<Object>()
-        {
-            @Override
-            public int compare(Object o1, Object o2)
-            {
-                int[] a = getInts(o1.toString());
-                int[] b = getInts(o2.toString());
-                if (a[0] != b[0]) return a[0] - b[0];
-                return a[1] - b[1];
-                
-            }
-            private int[] getInts(String val)
-            {
-                val = val.substring(1, val.length() - 1);
-                String[] tmp = val.split(",");
-                return new int[]
-                {
-                    Integer.parseInt(tmp[0]),
-                    Integer.parseInt(tmp[1])
-                };
-            }
-        });
+        Collections.sort(list);
         return list.iterator();
     }
 }

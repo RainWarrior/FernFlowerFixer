@@ -38,6 +38,47 @@ public class InnerClassOrderFixer implements IClassProcessor
     @Override
     public void process(ClassNode node)
     {
+        if (node.name.equals("de"))
+        {
+            node.interfaces.add("java/lang/Comparable");
+
+            MethodNode mn = new MethodNode(ACC_PUBLIC, "compareTo", "(Lpkg/de;)I", null, null);
+            mn.visitCode();
+            mn.visitVarInsn(ALOAD, 0);
+            mn.visitFieldInsn(GETFIELD, "pkg/de", "a", "I");
+            mn.visitVarInsn(ALOAD, 1);
+            mn.visitFieldInsn(GETFIELD, "pkg/de", "a", "I");
+            Label l0 = new Label();
+            mn.visitJumpInsn(IF_ICMPEQ, l0);
+            mn.visitVarInsn(ALOAD, 0);
+            mn.visitFieldInsn(GETFIELD, "pkg/de", "a", "I");
+            mn.visitVarInsn(ALOAD, 1);
+            mn.visitFieldInsn(GETFIELD, "pkg/de", "a", "I");
+            mn.visitInsn(ISUB);
+            mn.visitInsn(IRETURN);
+            mn.visitLabel(l0);
+            mn.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+            mn.visitVarInsn(ALOAD, 0);
+            mn.visitFieldInsn(GETFIELD, "pkg/de", "b", "I");
+            mn.visitVarInsn(ALOAD, 1);
+            mn.visitFieldInsn(GETFIELD, "pkg/de", "b", "I");
+            mn.visitInsn(ISUB);
+            mn.visitInsn(IRETURN);
+            mn.visitMaxs(2, 2);
+            mn.visitEnd();
+            node.methods.add(mn);
+
+            mn = new MethodNode(ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC, "compareTo", "(Ljava/lang/Object;)I", null, null);
+            mn.visitCode();
+            mn.visitVarInsn(ALOAD, 0);
+            mn.visitVarInsn(ALOAD, 1);
+            mn.visitTypeInsn(CHECKCAST, "pkg/de");
+            mn.visitMethodInsn(INVOKEVIRTUAL, "pkg/de", "compareTo", "(Lpkg/de;)I");
+            mn.visitInsn(IRETURN);
+            mn.visitMaxs(2, 2);
+            mn.visitEnd();
+            node.methods.add(mn);
+        }
         if (!node.name.equals("d")) return;
 
         MethodNode mtd = FFFixerImpl.getMethod(node, "b", "(Lcu;Lq;)V");
