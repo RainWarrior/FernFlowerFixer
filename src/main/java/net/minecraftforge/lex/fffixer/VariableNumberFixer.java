@@ -100,13 +100,17 @@ public class VariableNumberFixer implements IClassProcessor
         Label l0 = new Label();
         mn.visitJumpInsn(IFEQ, l0);
         mn.visitVarInsn(ALOAD, 0);
+        mn.visitFieldInsn(GETFIELD, "aC", "f", "I");
+        mn.visitInsn(ICONST_M1);
+        mn.visitJumpInsn(IF_ICMPNE, l0);
+        mn.visitVarInsn(ALOAD, 0);
         mn.visitFieldInsn(GETFIELD, "aC", "d", "LaJ;");
         mn.visitTypeInsn(CHECKCAST, idx);
         mn.visitMethodInsn(INVOKEINTERFACE, idx, "getIndex", "()I", true);
         Label l1 = new Label();
         mn.visitJumpInsn(GOTO, l1);
         mn.visitLabel(l0);
-        mn.visitInsn(ICONST_M1);
+        mn.visitLdcInsn(new Integer(100000));
         mn.visitLabel(l1);
         mn.visitInsn(IRETURN);
         mn.visitEnd();

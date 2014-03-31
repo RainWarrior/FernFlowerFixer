@@ -16,25 +16,38 @@ public class Util
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Iterator sortIndexed(Iterator itr)
     {
-        List list = new ArrayList();
+        List prefix = new ArrayList();
+        List infix = new ArrayList<Indexed>();
+        List suffix = new ArrayList();
+
+        Object next;
+        boolean inPrefix = true;
 
         while(itr.hasNext())
-            list.add(itr.next());
-
-        Collections.sort(list, new Comparator() {
-            @Override
-            public int compare(Object o1, Object o2)
+        {
+            next = itr.next();
+            if(inPrefix)
             {
-                if(o1 instanceof Indexed) {
-                    if(o2 instanceof Indexed)
-                        return ((Indexed)o1).getIndex() - ((Indexed)o2).getIndex();
-                    else return -1;
-                }
-                else if(o2 instanceof Indexed) return 1;
-                else return 0;
+                if(next instanceof Indexed) inPrefix = false;
+                else prefix.add(next);
+            }
+            if(!inPrefix)
+            {
+                if(next instanceof Indexed) infix.add((Indexed)next);
+                else suffix.add(next);
+            }
+        }
+
+        Collections.sort(infix, new Comparator<Indexed>() {
+            @Override
+            public int compare(Indexed i1, Indexed i2)
+            {
+                return i1.getIndex() - i2.getIndex();
             }
         });
-        return list.iterator();
+        prefix.addAll(infix);
+        prefix.addAll(suffix);
+        return prefix.iterator();
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
